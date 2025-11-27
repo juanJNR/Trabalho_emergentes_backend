@@ -2,8 +2,8 @@ import express from "express";
 import http from "http";
 import cors from "cors";
 import { initSocket } from "./socket";
-import turmaRoutes from "./routes/TurmaRoutes";
-import presencaRoutes from "./routes/PresencaRoutes";
+import turmaRoutes from "./routes/turmaRoutes";
+import presencaRoutes from "./routes/presencaRoutes";
 
 const app = express();
 const server = http.createServer(app);
