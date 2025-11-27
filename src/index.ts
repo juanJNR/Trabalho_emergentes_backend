@@ -1,28 +1,31 @@
-import express from 'express';
-import http from 'http';
-import { Server } from 'socket.io';
-import cors from 'cors';
-import bodyParser from 'body-parser';
-import turmaRoutes from './routes/turmaRoutes';
-import presencaRoutes from './routes/presencaRoutes';
+import express from "express";
+import http from "http";
+import cors from "cors";
+import { initSocket } from "./socket";
+import turmaRoutes from "./routes/TurmaRoutes";
+import presencaRoutes from "./routes/PresencaRoutes";
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: '*' } });
 
+// Inicializar Socket.IO
+initSocket(server);
+
+// Middlewares
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 
-app.use('/turmas', turmaRoutes(io));
-app.use('/presenca', presencaRoutes(io));
+// Rotas
+app.use("/api", turmaRoutes);
+app.use("/api", presencaRoutes);
 
-app.get('/', (req, res) => {
-    res.send('API de chamada escolar ativa!');
+// Rota de teste
+app.get("/", (req, res) => {
+    res.json({ message: "API de Presença com QR Code funcionando!" });
 });
 
 const PORT = process.env.PORT || 3001;
+
 server.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });
-
-export { io };
