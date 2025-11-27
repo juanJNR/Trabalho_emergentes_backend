@@ -1,15 +1,20 @@
-import express from 'express';
-import TurmaController from '../controllers/TurmaController';
-import { Server } from 'socket.io';
+import { Router } from "express";
+import {
+    criarTurma,
+    listarTurmas,
+    detalhesTurma,
+    gerarQRCode,
+    listaPresenca,
+    downloadPresenca
+} from "../controllers/TurmaController";
 
-export default (io: Server) => {
-    const router = express.Router();
+const router = Router();
 
-    router.post('/', TurmaController.criarTurma);
-    router.get('/:id', TurmaController.detalhesTurma);
-    router.post('/:id/gerar-token', (req, res) => TurmaController.gerarToken(req, res, io));
-    router.get('/:id/presenca', TurmaController.listaPresenca);
-    router.get('/:id/download', TurmaController.downloadPresenca);
+router.post("/turmas", criarTurma);
+router.get("/turmas", listarTurmas);
+router.get("/turmas/:id", detalhesTurma);
+router.post("/turmas/:id/qrcode", gerarQRCode);
+router.get("/turmas/:id/presencas", listaPresenca);
+router.get("/turmas/:id/download", downloadPresenca);
 
-    return router;
-};
+export default router;

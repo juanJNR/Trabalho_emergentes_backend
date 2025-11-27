@@ -1,11 +1,8 @@
-import express from 'express';
-import PresencaController from '../controllers/PresencaController';
-import { Server } from 'socket.io';
+import { Router } from "express";
+import { registrarPresenca } from "../controllers/PresencaController";
 
-export default (io: Server) => {
-    const router = express.Router();
+const router = Router();
 
-    router.post('/', (req, res) => PresencaController.registrarPresenca(req, res, io));
+router.post("/presencas", registrarPresenca);
 
-    return router;
-};
+export default router;
