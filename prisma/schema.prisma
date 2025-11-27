@@ -1,0 +1,32 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Turma {
+    id        Int             @id @default(autoincrement())
+    nome      String
+    presencas Presenca[]
+    tokens    TokenPresenca[]
+}
+
+model TokenPresenca {
+    id       Int      @id @default(autoincrement())
+    token    String   @unique
+    turmaId  Int
+    expiraEm DateTime
+    turma    Turma    @relation(fields: [turmaId], references: [id])
+}
+
+model Presenca {
+    id        Int      @id @default(autoincrement())
+    alunoNome String
+    alunoIP   String
+    turmaId   Int
+    createdAt DateTime @default(now())
+    turma     Turma    @relation(fields: [turmaId], references: [id])
+}
