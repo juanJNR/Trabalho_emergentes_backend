@@ -13,7 +13,7 @@ export const initSocket = (server: HttpServer): SocketServer => {
 
     io.on('connection', (socket) => {
         console.log('Cliente conectado:', socket.id);
-        
+
         socket.on('joinRoom', (turmaId: string) => {
             socket.join(turmaId);
             console.log(`Cliente ${socket.id} entrou na sala ${turmaId}`);

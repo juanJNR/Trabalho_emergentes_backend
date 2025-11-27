@@ -1,7 +1,6 @@
-import PresencaService from '../services/PresencaService';
-import { Request, Response } from 'express';
-import { Server } from 'socket.io';
-import { prisma } from '../database';
+import { Request, Response } from "express";
+import { prisma } from "../prisma/client";
+import { getIO } from "../socket";
 
 const PresencaController = {
     async registrarPresenca(req: Request, res: Response, io: Server) {
@@ -30,14 +29,23 @@ export const registrarPresenca = async (req: Request, res: Response) => {
         });
 
         if (!tokenPresenca) {
-            return res.status(400).json({ error: "Token inválido" });
+            return res.status(404).json({ error: "Token inválido ou expirado" });
         }
 
-        const alunoIP = req.ip;
-        const presenca = await PresencaService.registrarPresenca(alunoNome, alunoIP, token, io);
+        const presenca = await prisma.presenca.create({
+            data: {
+                alunoNome: String(alunoNome),
+                turmaId: tokenPresenca.turmaId
+            },
+            include: { turma: true }
+        });
+
+        const io = getIO();
+        io.to(String(tokenPresenca.turmaId)).emit("novaPresenca", presenca);
+
         res.status(201).json(presenca);
-    } catch (err: any) {
-        res.status(400).json({ error: err.message });
+    } catch (error) {
+        res.status(500).json({ error: "Erro ao registrar presença" });
     }
 };
 
