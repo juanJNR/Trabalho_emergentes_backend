@@ -4,8 +4,8 @@
     "main": "dist/index.js",
     "scripts": {
         "dev": "tsx watch src/index.ts",
-        "build": "prisma generate && tsc",
-        "start": "node dist/index.js",
+        "build": "prisma generate && tsc && ls -la dist",
+        "start": "pwd && ls -la && node dist/index.js",
         "postinstall": "prisma generate"
     },
     "dependencies": {
